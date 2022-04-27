@@ -8,6 +8,9 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
+
+https://djbook.ru/examples/77/
+https://medium.com/@ishitasharma13579/fluent-comment-in-django-rest-framework-787b054e4f5c
 """
 
 from pathlib import Path
@@ -31,12 +34,18 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'fluent_comments',
+    'threadedcomments',
+    'django_comments',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'comment.apps.CommentConfig',
+    'django.contrib.sites',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -76,8 +85,12 @@ WSGI_APPLICATION = 'Kvartirka.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'comment_db',
+        'USER' : 'admin_kv',
+        'PASSWORD' : 'password',
+        'HOST' : '127.0.0.1',
+        'PORT' : '5432',
     }
 }
 
@@ -122,3 +135,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+COMMENTS_APP = 'fluent_comments'
+FLUENT_COMMENTS_FORM_CLASS = 'fluent_comments.forms.CompactLabelsCommentForm'
+FLUENT_COMMENTS_EXCLUDE_FIELDS = ('name', 'email', 'url', 'title')
+SITE_ID = 1
