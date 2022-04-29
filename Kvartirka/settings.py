@@ -14,6 +14,7 @@ https://medium.com/@ishitasharma13579/fluent-comment-in-django-rest-framework-78
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,12 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-q=4kae948pi6+il^jq01m@f)s^b!p2r=f(5dp9xzne*xh%1pi@'
+SECRET_KEY = os.environ.get('SECRET_KEY', default="django-insecure-q=4kae948pi6+il^jq01m@f)s^b!p2r=f(5dp9xzne*xh%1pi@")
+DEBUG = int(os.environ.get("DEBUG", default=1))
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="127.0.0.1").split(" ")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -90,16 +89,15 @@ WSGI_APPLICATION = 'Kvartirka.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'comment_db',
-        'USER' : 'admin_kv',
-        'PASSWORD' : 'password',
-        'HOST' : '127.0.0.1',
-        'PORT' : '5432',
+    "default": {
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql_psycopg2"),
+        "NAME": os.environ.get("SQL_DATABASE", "comment_db"),
+        "USER": os.environ.get("SQL_USER", "admin_kv"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+        "HOST": os.environ.get("SQL_HOST", "127.0.0.1"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -136,6 +134,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

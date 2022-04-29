@@ -60,9 +60,10 @@ class CommentThreeAndMoreLevel(serializers.ModelSerializer):
     class Meta:
         model = FluentComment
         fields = (
-            'id',
             'tree_path',
+            'object_pk',
             'comment',
+            'id',
             'parent',
             'comments',
         )

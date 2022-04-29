@@ -18,7 +18,7 @@ class PollViewSet(viewsets.ModelViewSet):
     #     return Response(serializer.data)
 
 
-class CommentViewSet(viewsets.ModelViewSet):
+class FullCommentViewSet(viewsets.ModelViewSet):
     queryset = FluentComment.objects.all()
     serializer_class = CommentSerializerFull
 
@@ -32,6 +32,7 @@ class CommentViewSet(viewsets.ModelViewSet):
             else:
                 parent = None
             submit_date = datetime.now()
+            content = ContentType.objects.get_or_create(model="Poll")
             content = ContentType.objects.get(model="Poll").pk
             comment = FluentComment.objects.create(object_pk=poll, comment=comment, submit_date=submit_date,
                                                    content_type_id=content, user_id=self.request.user.id,
