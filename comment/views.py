@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from fluent_comments.models import FluentComment
-from .serializers import CommentSerializerWithoutChildren, PollSerializer, CommentSerializerFull, CommentThreeAndMoreLevel
+from .serializers import CommentSerializerWithoutChildren, PollSerializer, CommentSerializerFull, \
+    CommentThreeAndMoreLevel
 from .models import Poll
 from django.contrib.contenttypes.models import ContentType
 from rest_framework.response import Response
@@ -12,13 +13,13 @@ class PollViewSet(viewsets.ModelViewSet):
     queryset = Poll.objects.all()
     serializer_class = PollSerializer
 
-    # def retrieve(self, request, pk=None):
-    #     poll = self.get_object()
-    #     serializer = self.serializer_class(poll, context={'request': request})
-    #     return Response(serializer.data)
+    def retrieve(self, request, pk=None):
+        poll = self.get_object()
+        serializer = self.serializer_class(poll, context={'request': request})
+        return Response(serializer.data)
 
 
-class CommentViewSet(viewsets.ModelViewSet):
+class FullCommentViewSet(viewsets.ModelViewSet):
     queryset = FluentComment.objects.all()
     serializer_class = CommentSerializerFull
 
@@ -32,6 +33,7 @@ class CommentViewSet(viewsets.ModelViewSet):
             else:
                 parent = None
             submit_date = datetime.now()
+            content = ContentType.objects.get_or_create(model="Poll")
             content = ContentType.objects.get(model="Poll").pk
             comment = FluentComment.objects.create(object_pk=poll, comment=comment, submit_date=submit_date,
                                                    content_type_id=content, user_id=self.request.user.id,
@@ -46,9 +48,6 @@ class CommentViewSet(viewsets.ModelViewSet):
 #
 #
 class CommentThreeLevelViewSet(viewsets.ModelViewSet):
-
     queryset = FluentComment.objects.filter(tree_path__regex="^.{32}$")
     serializer_class = CommentThreeAndMoreLevel
     http_method_names = ['get']
-
-
