@@ -45,7 +45,31 @@ class PollSerializer(serializers.ModelSerializer):
         model = Poll
         fields = ('id', 'name', 'details', 'comments')
 
-    def get_comments(self, obj):
+    @staticmethod
+    def get_comments(obj):
         poll_comment = FluentComment.objects.filter(object_pk=obj.id, tree_path__regex="^.{10}$|^.{21}$|^.{32}$")
         serializer = CommentSerializerWithoutChildren(poll_comment, many=True)
-        return serializer.data
+        data = serializer.data
+        return data
+
+
+class CommentThreeAndMoreLevel(serializers.ModelSerializer):
+
+    comments = serializers.SerializerMethodField()
+
+    class Meta:
+        model = FluentComment
+        fields = (
+            'id',
+            'tree_path',
+            'comment',
+            'parent',
+            'comments',
+        )
+
+    @staticmethod
+    def get_comments(obj):
+        nested_comment = FluentComment.objects.filter(parent_id=obj.id)
+        serializer = CommentSerializerWithoutChildren(nested_comment, many=True)
+        data = serializer.data
+        return data
